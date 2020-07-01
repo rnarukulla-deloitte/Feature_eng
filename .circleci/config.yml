@@ -18,7 +18,7 @@ jobs: # A basic unit of work in a run
             python3 -m venv venv && . venv/bin/activate &&  pip install -r test_requirements.txt
       - run:
           command: |
-            . venv/bin/activate && ls && PYTHONPATH='.' py.test test_cases/test_fe.py test
+            . venv/bin/activate && PYTHONPATH='.' python test_cases/test_fe.py test
       - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: test-results
       - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/

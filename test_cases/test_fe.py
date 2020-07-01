@@ -2,7 +2,7 @@ import unittest
 import pandas as pd
 import numpy as np
 from AV_clubmahindra_feature_eng.fe_modules import date_col_derivation, date_diff, agg_col, groupby_time_delta
-from pandas.util.testing import assert_frame_equal, assert_series_equal
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 class test_fe_modules(unittest.TestCase):
 
