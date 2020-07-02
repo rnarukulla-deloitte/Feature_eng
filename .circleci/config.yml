@@ -1,26 +1,34 @@
-version: 2 # use CircleCI 2.0
+version: 2.1
+orbs:
+  python-lint: qventus/python-lint@0.0.6
 jobs: # A basic unit of work in a run
-  build: # runs not using Workflows must have a `build` job as entry point
-    # directory where steps are run
-    working_directory: ~/circleci-build_fe_eng
-    docker: # run the steps with Docker
-      # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
-      - image: circleci/python:3.7.6
-        environment: # environment variables for primary container
-          PIPENV_VENV_IN_PROJECT: true
+    build: # runs not using Workflows must have a `build` job as entry point
+      # directory where steps are run
+      working_directory: ~/circleci-build_fe_eng
+      docker: # run the steps with Docker
+        # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
+        - image: circleci/python:3.7.6
+          environment: # environment variables for primary container
+            PIPENV_VENV_IN_PROJECT: true
 
-    steps: # steps that comprise the `build` job
-      - checkout # check out source code to working directory
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
-      - run:
-          command: |
-            python3 -m venv venv && . venv/bin/activate &&  pip install -r test_requirements.txt
-      - run:
-          command: |
-            . venv/bin/activate && PYTHONPATH='.' python test_cases/test_fe.py test
-      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: test-results
-      - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: test-results
-          destination: tr1
+      steps: # steps that comprise the `build` job
+        - checkout # check out source code to working directory
+        - run: sudo chown -R circleci:circleci /usr/local/bin
+        - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+        - run:
+            command: |
+              python3 -m venv venv && . venv/bin/activate &&  pip install -r test_requirements.txt && PYTHONPATH='.' pytest
+
+        - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+            path: test-results
+        - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+            path: test-results
+            destination: tr1
+    test1:
+      - pylint/lint
+workflows:
+  version: 2.1
+    build_and_test:
+      jobs:
+        - build
+        - test1
