@@ -25,10 +25,16 @@ jobs: # A basic unit of work in a run
             path: test-results
             destination: tr1
     test1:
+      docker: # run the steps with Docker
+          # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
+        - image: circleci/python:3.7.6
+          environment: # environment variables for primary container
+            PIPENV_VENV_IN_PROJECT: true
       - pylint/lint
+
 workflows:
   version: 2.1
-    build_and_test:
-      jobs:
-        - build
-        - test1
+  build_and_test:
+    jobs:
+      - build
+      - test1
