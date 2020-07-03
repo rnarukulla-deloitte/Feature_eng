@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  python-lint: qventus/python-lint@0.0.6
 jobs: # A basic unit of work in a run
     build: # runs not using Workflows must have a `build` job as entry point
       # directory where steps are run
@@ -18,18 +16,8 @@ jobs: # A basic unit of work in a run
         - run:
             command: |
               python3 -m venv venv && . venv/bin/activate &&  pip install -r test_requirements.txt && PYTHONPATH='.' pytest
-
         - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
             path: test-results
         - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
             path: test-results
             destination: tr1
-    test1:
-      - pylint/lint
-
-workflows:
-  version: 2.1
-  build_and_test:
-    jobs:
-      - build
-      - test1
