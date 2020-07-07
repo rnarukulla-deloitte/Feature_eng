@@ -24,11 +24,11 @@ jobs: # A basic unit of work in a run
     pylint_test:
       working_directory: ~/circleci-build_fe_eng
       docker: # run the steps with Docker
-          - image: circleci/python:3.7.6
-            environment:
-              PIPENV_VENV_IN_PROJECT: true
+        - image: circleci/python:3.7.6
+          environment:
+            PIPENV_VENV_IN_PROJECT: true
       steps:
-      - pylint/lint
+        - pylint/lint
 
 workflows:
   version: 2.1
