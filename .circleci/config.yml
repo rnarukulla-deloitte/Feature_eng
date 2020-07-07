@@ -1,6 +1,6 @@
 version: 2.1
 jobs: # A basic unit of work in a run
-    build: # runs not using Workflows must have a `build` job as entry point
+    build_tests:
       # directory where steps are run
       working_directory: ~/circleci-build_fe_eng
       docker: # run the steps with Docker
@@ -21,3 +21,7 @@ jobs: # A basic unit of work in a run
         - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
             path: test-results
             destination: tr1
+workflows:
+  build:
+    jobs:
+      - build_tests
