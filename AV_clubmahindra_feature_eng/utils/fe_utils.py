@@ -71,6 +71,6 @@ def groupby_time_delta(df, groupby_col, time_col, shift_by):
     new_delta_col = "time_gap_" + time_col + "_" + shift_type + "_" + str(abs(shift_by))
 
     df[shift_col_name] = df.groupby(groupby_col)[time_col].shift(shift_by)
-    df[new_delta_col] = date_diff(df, time_col, shift_col_name, diff_format="days")
+    df[new_delta_col] = df[time_col] - df[shift_col_name]
 
     return df, shift_col_name, new_delta_col

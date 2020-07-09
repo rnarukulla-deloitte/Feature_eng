@@ -1,14 +1,13 @@
-import pandas as pd
 from functools import reduce
+import pandas as pd
 
-from fe_modules import date_col_derivation, date_diff, agg_col, groupby_time_delta
+from utils.fe_utils import date_col_derivation, date_diff, agg_col, groupby_time_delta
 
 
-if __name__ == "__main__":
+def get_features(train_path, test_path):
 
-    train_df = pd.read_csv("train_data/train.csv")
-    test_df = pd.read_csv("test_data/test.csv")
-    print(train_df.shape, test_df.shape)
+    train_df = pd.read_csv(train_path)
+    test_df = pd.read_csv(test_path)
 
     date_cols = ["booking_date", "checkin_date", "checkout_date"]
     train_df = date_col_derivation(df=train_df, col_list=date_cols, date_format="%d/%m/%y")
@@ -23,7 +22,6 @@ if __name__ == "__main__":
 
     all_df = pd.concat([train_df, test_df]).reset_index(drop=True)
     all_df = all_df.sort_values(by="checkin_date").reset_index(drop=True)
-    print(all_df.shape)
 
     additional_cols = ["memberid", "resort_id", "state_code_residence", "checkin_date", "booking_date"]
     new_df = all_df[["reservation_id"] + additional_cols]
@@ -79,6 +77,7 @@ if __name__ == "__main__":
 
     ### Info on prev and next visits (no change from old code)
     for col in ["channel_code", "room_type_booked_code", "resort_type_code", "main_product_code"]:
+
         all_df["prev_" + col] = all_df.groupby("memberid")[col].shift(1)
         new_df["prev_diff_" + col] = (all_df[col] == all_df["prev_" + col]).astype(int)
 
@@ -101,3 +100,5 @@ if __name__ == "__main__":
     gdf = pd.pivot_table(all_df, index="memberid", columns="room_type_booked_code", values="reservation_id",
                          aggfunc="count", fill_value=0).reset_index()
     new_df = pd.merge(new_df, gdf, on="memberid", how="left")
+
+    return new_df
